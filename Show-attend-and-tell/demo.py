@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import cPickle as pickle
+import pickle as pickle
 import tensorflow as tf
 from core.solver import CaptioningSolver
 from core.model import CaptionGenerator

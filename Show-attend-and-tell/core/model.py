@@ -34,7 +34,7 @@ class CaptionGenerator(object):
         """
         
         self.word_to_idx = word_to_idx
-        self.idx_to_word = {i: w for w, i in word_to_idx.iteritems()}
+        self.idx_to_word = {i: w for w, i in word_to_idx.items()}
         self.prev2out = prev2out
         self.ctx2out = ctx2out
         self.alpha_c = alpha_c
