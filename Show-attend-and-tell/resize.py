@@ -19,6 +19,7 @@ def resize_image(image):
     image = image.resize([224, 224], Image.ANTIALIAS)
     return image
 
+
 def main():
     splits = ['train', 'val']
     for split in splits:

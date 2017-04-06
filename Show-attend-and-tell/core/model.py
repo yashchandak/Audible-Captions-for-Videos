@@ -14,10 +14,10 @@ from __future__ import division
 
 import tensorflow as tf
 import numpy as np
-
+import pickle as pickle
 
 class CaptionGenerator(object):
-    def __init__(self, word_to_idx, dim_feature=[196, 512], dim_embed=512, dim_hidden=1024, n_time_step=16, 
+    def __init__(self, word_to_idx=None, dim_feature=[196, 512], dim_embed=512, dim_hidden=1024, n_time_step=16, 
                   prev2out=True, ctx2out=True, alpha_c=0.0, selector=True, dropout=True, vggnet=False):
         """
         Args:
@@ -32,22 +32,26 @@ class CaptionGenerator(object):
             selector: (optional) gating scalar for context vector. (see Section (4.2.1) for explanation)
             dropout: (optional) If true then dropout layer is added.
         """
-        
-        self.word_to_idx = word_to_idx
-        self.idx_to_word = {i: w for w, i in word_to_idx.items()}
+        if word_to_idx == None:
+            with open('./data/train/word_to_idx.pkl', 'rb') as f:
+                self.word_to_idx = pickle.load(f)
+        else:
+            self.word_to_idx = word_to_idx
+            
+        self.idx_to_word = {i: w for w, i in self.word_to_idx.items()}
         self.prev2out = prev2out
         self.ctx2out = ctx2out
         self.alpha_c = alpha_c
         self.selector = selector
         self.dropout = dropout
-        self.V = len(word_to_idx)
+        self.V = len(self.word_to_idx)
         self.L = dim_feature[0]
         self.D = dim_feature[1]
         self.M = dim_embed
         self.H = dim_hidden
         self.T = n_time_step
-        self._start = word_to_idx['<START>']
-        self._null = word_to_idx['<NULL>']
+        self._start =self. word_to_idx['<START>']
+        self._null = self.word_to_idx['<NULL>']
 
         self.weight_initializer = tf.contrib.layers.xavier_initializer()
         self.const_initializer = tf.constant_initializer(0.0)
