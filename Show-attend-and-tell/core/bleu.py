@@ -58,8 +58,7 @@ def evaluate(data_path='./data', split='val', get_scores=False):
         return final_scores
     
    
-    
-    
+
     
     
     

@@ -14,10 +14,14 @@ from resize import resize_image
 import skimage.transform
 from Data import DataIn, DataOut
 
+import sys
+sys.path.append('../coco-caption')
+from pycocoevalcap.rouge.rouge import Rouge
+
 plt.rcParams['figure.figsize'] = (20.0, 15.0)  # set default size of plots
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
-dataIn  = DataIn('image')
+dataIn  = DataIn('client')
 dataOut = DataOut('console')
 
 #Load and build VGG network
@@ -43,7 +47,11 @@ saver = tf.train.Saver(set(tf.all_variables())-vggnet_variables) #Restore only c
 restore_path = './model/lstm/model-20'
 saver.restore(sess, restore_path)
 
-
+Rouge_scorer = Rouge()
+def different(str1, str2):
+    score  = Rouge_scorer.compute_score({1:[str1[0]]}, {1:[str2[0]]})[0]
+    #print("------Score: ", score)
+    return score < 0.75
 
 def visualize(alps, bts, words, img):
     # Plot images with attention weights 
@@ -70,6 +78,7 @@ with sess.as_default():
     tf.initialize_variables(vggnet_variables).run() #only initialize the newly added VGGnet variables
     print([var.name for var in tf.all_variables()])
 
+    prv_decoded = [" "]
     for raw_image in dataIn.get():
         image = np.array(raw_image, dtype=np.float32)
         t0 = time.time()
@@ -79,8 +88,12 @@ with sess.as_default():
         t1 = time.time()
         print('Image captioning time: ', t1- t0)
 
-        visualize(alps, bts, decoded, raw_image)
-        dataOut.send(decoded)
+        #visualize(alps, bts, decoded, raw_image)
+        if different(decoded, prv_decoded):
+            dataOut.send(decoded)
+        else:
+            print('-------similar------')
+        prv_decoded = decoded
 
         print('total time: ', time.time()-t0)
     
