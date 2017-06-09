@@ -1,7 +1,7 @@
 from __future__ import print_function
 import numpy as np
 import time
-from PIL import Image
+from PIL import Image, ImageOps
 from resize import resize_image
 
 import io
@@ -28,6 +28,7 @@ class DataIn:
 
     def preprocess(self, image):
         image = resize_image(image)
+        #image = ImageOps.equalize(image)
         return image
 
     def getVideo(self):
@@ -108,15 +109,21 @@ class DataOut:
         if dest == 'console':
             self.fn = self.writeConsole
         elif dest == 'client':
-            self.fn = self.sendClient
+           self.fn = self.sendClient
         else:
             raise ValueError("Invalid Type of destination: %s"%(dest))
 
     def send(self, msg):
-        self.fn(msg)
+        self.fn(msg[0])
 
     def writeConsole(self, msg):        
         print("Caption: %s"%(msg))
 
-    def sendClient(self):
-        raise ValueError("Not implemented!")
+    def sendClient(self, msg):
+        print("Caption: %s"%(msg))
+        host = '192.168.43.177'
+        port = 5000
+        mysocket = socket.socket()
+        mysocket.connect((host, port))
+        mysocket.send(msg.encode())
+        mysocket.close()

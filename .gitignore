@@ -1,8 +1,11 @@
 
 Show-attend-and-tell/data
+Show-attend-and-tell/jpg
+Show-attend-and-tell/samples
 Show-attend-and-tell/image
 Show-attend-and-tell/log
 Show-attend-and-tell/model
 *.pyc
 *.hkl
 *.mat
+*.mp4

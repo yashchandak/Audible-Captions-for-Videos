@@ -21,7 +21,7 @@ from pycocoevalcap.rouge.rouge import Rouge
 plt.rcParams['figure.figsize'] = (20.0, 15.0)  # set default size of plots
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
-dataIn  = DataIn('client')
+dataIn  = DataIn('image')
 dataOut = DataOut('console')
 
 #Load and build VGG network
@@ -88,7 +88,7 @@ with sess.as_default():
         t1 = time.time()
         print('Image captioning time: ', t1- t0)
 
-        #visualize(alps, bts, decoded, raw_image)
+        visualize(alps, bts, decoded, raw_image)
         if different(decoded, prv_decoded):
             dataOut.send(decoded)
         else:
